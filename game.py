@@ -12,7 +12,7 @@ class Game:
         basicfont = pygame.font.SysFont('comicsans', 30)
 
         # obj
-        self.grid = Grid(800, 50)
+        self.grid = Grid(800, 75)
         self.path_btn = Button(10, 10, 50, "Go !", GRAY, WHITE, basicfont, False, self.go)
 
         self.btns = pygame.sprite.Group(self.path_btn)

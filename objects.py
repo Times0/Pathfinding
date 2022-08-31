@@ -66,7 +66,7 @@ def aux(grid, pos, end, path, visited):
         return visited, True, path
     i, j = pos
     n = len(grid)
-    for next_pos in neighbours(i, j, n):
+    for next_pos in better_neighbours(i, j, n, end):
         vi, vj = next_pos
         if next_pos not in path and grid[vi][vj] == 0:
 
@@ -88,8 +88,20 @@ def neighbours(i, j, n):
     return v
 
 
-g = [[0, 0, 0],
-     [1, 1, 0],
-     [0, 0, 0]]
-s = (0, 0)
-e = (2, 2)
+def better_neighbours(i, j, n, end):
+    ai, aj = end
+    d = {"h": i - ai,
+         "b": ai - i,
+         "g": j - aj,
+         "d": aj - j}
+    k = list(d.keys())
+    k.sort(key=lambda x: d[x], reverse=True)
+    L = []
+    for e in k:
+        ii, jj = dic[e]
+        if 0 <= i + ii < n and 0 <= j + jj < n:
+            L.append((i + ii, j + jj))
+    return L
+
+
+dic = {"h": (-1, 0), "b": (1, 0), "g": (0, -1), "d": (0, 1)}
