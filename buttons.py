@@ -79,7 +79,7 @@ class ButtonImg(pygame.sprite.Sprite):
     def __init__(self, img, x, y, onclick):
         super().__init__()
         self.image = img
-        self.rect = self.image.get_rect(center=(x, y))
+        self.rect = self.image.get_rect(topleft=(x, y))
         self.x, self.y = x, y
         self.pos = x, y
         self.onclick = onclick

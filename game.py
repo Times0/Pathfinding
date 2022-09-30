@@ -50,7 +50,7 @@ class Game:
     def go(self):
         L = pathfind(self.grid.grid, self.grid.start, self.grid.end)
         if L:
-            self.grid.show_path(L)
+            self.grid.path = L
 
     def draw(self, win):
         self.grid.draw(win)
