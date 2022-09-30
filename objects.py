@@ -16,6 +16,8 @@ class Grid:
         self.offset_x = (WIDTH - self.width) // 2
         self.offset_y = (HEIGHT - self.width) // 2
 
+        print(self.offset_x, self.offset_y)
+
     def draw(self, win):
         n = self.n
         c_size = self.cell_size

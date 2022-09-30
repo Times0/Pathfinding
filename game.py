@@ -2,6 +2,7 @@ import pygame.sprite
 from constants import *
 from objects import *
 from buttons import Button
+from label import Label
 
 
 class Game:
@@ -12,10 +13,15 @@ class Game:
         basicfont = pygame.font.SysFont('comicsans', 30)
 
         # obj
-        self.grid = Grid(800, 75)
+        self.grid = Grid(700, 30)
         self.path_btn = Button(10, 10, 50, "Go !", GRAY, WHITE, basicfont, False, self.go)
 
+        # ui
+        self.explanation_lbl = Label("Mousewheel button to set arrival point", 10, 100,
+                                     pygame.font.SysFont('comicsans', 20), WHITE)
+
         self.btns = pygame.sprite.Group(self.path_btn)
+        self.labels = pygame.sprite.Group(self.explanation_lbl)
 
     def run(self):
         clock = pygame.time.Clock()
@@ -49,3 +55,4 @@ class Game:
     def draw(self, win):
         self.grid.draw(win)
         self.btns.draw(win)
+        self.labels.draw(win)
