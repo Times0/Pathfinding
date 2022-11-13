@@ -1,8 +1,11 @@
 import pygame.sprite
 from constants import *
 from objects import *
-from buttons import Button
+from buttons import Button, ButtonImg
 from label import Label
+
+r_image = pygame.image.load("restart.png")
+r_image = pygame.transform.scale(r_image, (35, 35))
 
 
 class Game:
@@ -15,12 +18,12 @@ class Game:
         # obj
         self.grid = Grid(700, 30)
         self.path_btn = Button(10, 10, 50, "Go !", GRAY, WHITE, basicfont, False, self.go)
-
+        self.r_btn = ButtonImg(r_image, 10, 50, self.grid.reset)
         # ui
         self.explanation_lbl = Label("Mousewheel button to set arrival point", 10, 100,
                                      pygame.font.SysFont('comicsans', 20), WHITE)
 
-        self.btns = pygame.sprite.Group(self.path_btn)
+        self.btns = pygame.sprite.Group(self.path_btn,self.r_btn)
         self.labels = pygame.sprite.Group(self.explanation_lbl)
 
     def run(self):
@@ -48,7 +51,7 @@ class Game:
         self.btns.update(eves)
 
     def go(self):
-        L = pathfind(self.grid.grid, self.grid.start, self.grid.end)
+        L = broken_pf(self.grid.grid, self.grid.start, self.grid.end)
         if L:
             self.grid.path = L
 

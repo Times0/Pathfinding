@@ -1,4 +1,6 @@
 import random
+import pathfinding.core.grid
+from pathfinding.finder.a_star import AStarFinder
 
 import pygame
 from colour import Color
@@ -60,7 +62,7 @@ class Grid:
         white = Color("black")
         colors = list(white.range_to(Color("pink"), n + 1))
         c_size = self.cell_size
-        for x, (i, j) in enumerate(self.path):
+        for x, (j, i) in enumerate(self.path):
             r, g, b = colors[x].rgb[0] * 255, colors[x].rgb[1] * 255, colors[x].rgb[2] * 255
             pygame.draw.rect(win, (r, g, b),
                              [j * c_size + self.offset_x + 0.25 * c_size, i * c_size + self.offset_y + 0.25 * c_size,
@@ -123,3 +125,14 @@ def better_neighbours(i, j, n, end):
 
 
 dic = {"h": (-1, 0), "b": (1, 0), "g": (0, -1), "d": (0, 1)}
+
+
+def broken_pf(matrix, start, end):
+    start = start[1], start[0]
+    end = end[1], end[0]
+    grid = pathfinding.core.grid.Grid(matrix=matrix, inverse=True)
+    start = grid.node(*start)
+    end = grid.node(*end)
+    finder = AStarFinder(diagonal_movement=False)
+    path, runs = finder.find_path(start, end, grid)
+    return path
