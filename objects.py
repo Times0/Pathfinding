@@ -1,3 +1,4 @@
+import math
 import random
 import pathfinding.core.grid
 from pathfinding.finder.a_star import AStarFinder
@@ -31,11 +32,14 @@ class Grid:
 
         for i in range(n):
             for j in range(n):
-                color = BROWN if self.grid[i][j] == 1 else GREEN if self.grid[i][j] == 2 else GRAY
+                color = DARKWHITE if self.grid[i][j] == 1 else LIGHTERBLACK
                 if (i, j) == self.end:
-                    color = PINK
+                    color = PURPLE
+                elif (i, j) == self.start:
+                    color = RED
+                s = c_size - 1 if self.grid[i][j] else c_size - 4
                 pygame.draw.rect(win, color,
-                                 [j * c_size + self.offset_x, i * c_size + self.offset_y, c_size - 1, c_size - 1])
+                                 [j * c_size + self.offset_x, i * c_size + self.offset_y, s, s])
         self.show_path(win)
 
     def handle_left_click(self, x, y):
@@ -44,6 +48,7 @@ class Grid:
         if i < 0 or i >= self.n or j < 0 or j >= self.n:
             return
         self.grid[i][j] = 1
+        self.solve()
 
     def handle_right_click(self, x, y):
         i = (y - self.offset_y) // self.cell_size
@@ -59,17 +64,27 @@ class Grid:
 
     def show_path(self, win):
         n = len(self.path)
-        white = Color("black")
-        colors = list(white.range_to(Color("pink"), n + 1))
+        start = Color("red")
+        colors = list(start.range_to(Color("purple"), n + 1))
         c_size = self.cell_size
+
+        pi, pj = None, None
         for x, (j, i) in enumerate(self.path):
             r, g, b = colors[x].rgb[0] * 255, colors[x].rgb[1] * 255, colors[x].rgb[2] * 255
-            pygame.draw.rect(win, (r, g, b),
-                             [j * c_size + self.offset_x + 0.25 * c_size, i * c_size + self.offset_y + 0.25 * c_size,
-                              c_size * 0.5, c_size * 0.5])
+
+            if pi is not None and pj is not None:
+                pygame.draw.line(win, (r, g, b),
+                                 ((pj + 0.5) * c_size + self.offset_x, (pi + 0.5) * c_size + self.offset_y),
+                                 ((j + 0.5) * c_size + self.offset_x, (i + 0.5) * c_size + self.offset_y),
+                                 int(30 / math.log2(n) * 1))
+            pi, pj = i, j
 
     def reset(self):
         self.__init__(self.width, self.n)
+
+    def solve(self):
+        if self.start and self.end:
+            self.path = broken_pf(self.grid, self.start, self.end)
 
 
 def pathfind(grid, start, end):

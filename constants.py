@@ -7,4 +7,4 @@ WIDTH, HEIGHT = int(1920 * ratio), int(1080 * ratio)
 print(HEIGHT)
 vec = pygame.math.Vector2
 # game
-FPS = 400
+FPS = 500

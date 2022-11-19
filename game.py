@@ -13,25 +13,26 @@ class Game:
         self.game_is_on = True
         self.win = win
 
-        basicfont = pygame.font.SysFont('comicsans', 30)
+        basicfont = pygame.font.SysFont('comicsans', 50)
 
         # obj
-        self.grid = Grid(700, 30)
-        self.path_btn = Button(10, 10, 50, "Go !", GRAY, WHITE, basicfont, False, self.go)
-        self.r_btn = ButtonImg(r_image, 10, 50, self.grid.reset)
+        self.grid = Grid(700, 20)
+        self.path_btn = Button(30, HEIGHT // 2 - 50, 50, "FIND PATH", (47, 47, 55), DARKWHITE, basicfont, False,
+                               self.go)
+        self.r_btn = ButtonImg(r_image, 10, HEIGHT - 100, self.grid.reset)
         # ui
         self.explanation_lbl = Label("Mousewheel button to set arrival point", 10, 100,
                                      pygame.font.SysFont('comicsans', 20), WHITE)
 
-        self.btns = pygame.sprite.Group(self.path_btn,self.r_btn)
-        self.labels = pygame.sprite.Group(self.explanation_lbl)
+        self.btns = pygame.sprite.Group(self.path_btn, self.r_btn)
+        self.labels = pygame.sprite.Group()
 
     def run(self):
         clock = pygame.time.Clock()
 
         while self.game_is_on:
             dt = clock.tick(FPS)
-            self.win.fill(BLACK)
+            self.win.fill(LIGHTBLACK)
             self.events()
             self.draw(self.win)
             pygame.display.flip()
@@ -51,9 +52,7 @@ class Game:
         self.btns.update(eves)
 
     def go(self):
-        L = broken_pf(self.grid.grid, self.grid.start, self.grid.end)
-        if L:
-            self.grid.path = L
+        self.grid.solve()
 
     def draw(self, win):
         self.grid.draw(win)
