@@ -5,8 +5,6 @@ from PygameUIKit.button import ButtonText
 from label import Label
 from objects import *
 
-r_image = pygame.image.load("restart.png")
-r_image = pygame.transform.scale(r_image, (35, 35))
 
 COLOR_BUTTON = (82, 148, 201)
 COLOR_TEXT_BUTTON = DARKWHITE
