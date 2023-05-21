@@ -1,7 +1,5 @@
+import heapq
 import math
-import random
-import pathfinding.core.grid
-from pathfinding.finder.a_star import AStarFinder
 
 import pygame
 from colour import Color
@@ -69,7 +67,7 @@ class Grid:
         c_size = self.cell_size
 
         pi, pj = None, None
-        for x, (j, i) in enumerate(self.path):
+        for x, (i, j) in enumerate(self.path):
             r, g, b = colors[x].rgb[0] * 255, colors[x].rgb[1] * 255, colors[x].rgb[2] * 255
 
             if pi is not None and pj is not None:
@@ -84,70 +82,66 @@ class Grid:
 
     def solve(self):
         if self.start and self.end:
-            self.path = broken_pf(self.grid, self.start, self.end)
+            self.path = a_star(self.grid, self.start, self.end)
 
 
-def pathfind(grid, start, end):
-    _, val, path = aux(grid, start, end, [], [])
-    print(start, end, val, path)
-    if val:
-        return path
+# define heuristic function to estimate distance to goal
+def heuristic(a, b):
+    return abs(b[0] - a[0]) + abs(b[1] - a[1])
 
 
-def aux(grid, pos, end, path, visited):
-    path.append(pos)
-    visited.append(pos)
-    if pos == end:
-        return visited, True, path
-    i, j = pos
-    n = len(grid)
-    for next_pos in better_neighbours(i, j, n, end):
-        vi, vj = next_pos
-        if next_pos not in visited and grid[vi][vj] == 0:
+def a_star(grid, start, end):
+    n, m = len(grid), len(grid[0])
+    # define possible movements (up, down, left, right, diagonal)
+    neighbors = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-            _, val, path = aux(grid, next_pos, end, path, visited)
-            if val:
-                return _, val, path
-    return visited, False, path
+    # create set of visited nodes and heap queue for exploring nodes
+    visited = set()
+    heap = [(0, start)]
+    came_from = dict()
+    cost_so_far = dict()
+    came_from[start] = None
+    cost_so_far[start] = 0
 
+    c = 0
+    # loop until heap queue is empty or goal is reached
+    while heap:
+        c += 1
+        # get node with the lowest cost from heap queue
+        current_cost, current_node = heapq.heappop(heap)
 
-def neighbours(i, j, n):
-    v = []
-    a = (1, 0), (-1, 0), (0, 1), (0, -1)
-    for y, x in a:
-        ni = i + y
-        nj = j + x
-        if 0 <= ni < n and 0 <= nj < n:
-            v.append((ni, nj))
-    random.shuffle(v)
-    return v
+        # check if goal is reached
+        if current_node == end:
+            break
 
+        # check neighbors of current node
+        for i, j in neighbors:
+            neighbor = current_node[0] + i, current_node[1] + j
+            ni, nj = neighbor
 
-def better_neighbours(i, j, n, end):
-    ai, aj = end
-    d = {"h": i - ai,
-         "b": ai - i,
-         "g": j - aj,
-         "d": aj - j}
-    k = list(d.keys())
-    k.sort(key=lambda x: d[x], reverse=True)
-    L = []
-    for e in k:
-        ii, jj = dic[e]
-        if 0 <= i + ii < n and 0 <= j + jj < n:
-            L.append((i + ii, j + jj))
-    return L
+            # skip neighbor if it is outside the grid
+            if ni < 0 or ni >= n or nj < 0 or nj >= m:
+                continue
 
+            new_cost = cost_so_far[current_node] + grid[ni][nj]
 
-dic = {"h": (-1, 0), "b": (1, 0), "g": (0, -1), "d": (0, 1)}
+            # skip neighbor if it is not traversable or has already been visited
+            if neighbor in visited or grid[ni][nj] == 1:
+                continue
 
+            # update cost and add neighbor to heap queue
+            cost_so_far[neighbor] = new_cost
+            priority = new_cost + heuristic(end, neighbor)
+            heapq.heappush(heap, (priority, neighbor))
+            visited.add(neighbor)
+            came_from[neighbor] = current_node
 
-def broken_pf(matrix, start, end):
-    start = start[1], start[0]
-    end = end[1], end[0]
-    grid = pathfinding.core.grid.Grid(matrix=matrix, inverse=True)
-    start = grid.node(*start)
-    end = grid.node(*end)
-    finder = AStarFinder(diagonal_movement=False)
-    path, runs = finder.find_path(start, end, grid)
+    # build path from start to end using came_from dictionary
+    path = []
+    current = end
+    while current != start:
+        path.append(current)
+        current = came_from[current]
+    path.append(start)
+    path.reverse()
     return path

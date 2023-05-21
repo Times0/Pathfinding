@@ -1,11 +1,17 @@
 import pygame.sprite
-from constants import *
-from objects import *
-from buttons import Button, ButtonImg
+from PygameUIKit import Group
+from PygameUIKit.button import ButtonText
+
 from label import Label
+from objects import *
 
 r_image = pygame.image.load("restart.png")
 r_image = pygame.transform.scale(r_image, (35, 35))
+
+COLOR_BUTTON = (82, 148, 201)
+COLOR_TEXT_BUTTON = DARKWHITE
+
+FONT_BTN = pygame.font.SysFont('None', 40)
 
 
 class Game:
@@ -17,14 +23,14 @@ class Game:
 
         # obj
         self.grid = Grid(700, 20)
-        self.path_btn = Button(30, HEIGHT // 2 - 50, 50, "FIND PATH", (47, 47, 55), DARKWHITE, basicfont, False,
-                               self.go)
-        self.r_btn = ButtonImg(r_image, 10, HEIGHT - 100, self.grid.reset)
+        self.find_path_btn = ButtonText(COLOR_BUTTON, self.grid.solve, "FIND PATH", border_radius=2,
+                                        font_color=COLOR_TEXT_BUTTON, font = FONT_BTN)
+        self.clear_btn = ButtonText(RED, self.grid.reset, "CLEAR", border_radius=2, font=FONT_BTN)
         # ui
         self.explanation_lbl = Label("Mousewheel button to set arrival point", 10, 100,
                                      pygame.font.SysFont('comicsans', 20), WHITE)
 
-        self.btns = pygame.sprite.Group(self.path_btn, self.r_btn)
+        self.btns = Group(self.find_path_btn, self.clear_btn)
         self.labels = pygame.sprite.Group()
 
     def run(self):
@@ -49,12 +55,14 @@ class Game:
             self.grid.handle_left_click(*pygame.mouse.get_pos())
         elif pressed[2]:
             self.grid.handle_right_click(*pygame.mouse.get_pos())
-        self.btns.update(eves)
+        self.btns.handle_events(eves)
 
     def go(self):
         self.grid.solve()
 
     def draw(self, win):
+        W, H = win.get_size()
         self.grid.draw(win)
-        self.btns.draw(win)
         self.labels.draw(win)
+        self.find_path_btn.draw(win, 100, H // 2 - self.find_path_btn.rect.height // 2 - 50)
+        self.clear_btn.draw(win, 100, H // 2 + self.find_path_btn.rect.height // 2 + 20)
