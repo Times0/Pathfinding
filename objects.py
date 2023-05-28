@@ -20,8 +20,6 @@ class Grid:
         self.offset_x = (WIDTH - self.width) // 2
         self.offset_y = (HEIGHT - self.width) // 2
 
-        print(self.offset_x, self.offset_y)
-
         self.path = []
 
     def draw(self, win):
@@ -30,7 +28,7 @@ class Grid:
 
         for i in range(n):
             for j in range(n):
-                color = DARKWHITE if self.grid[i][j] == 1 else LIGHTERBLACK
+                color = DARK_WHITE if self.grid[i][j] == 1 else LIGHTER_BLACK
                 if (i, j) == self.end:
                     color = PURPLE
                 elif (i, j) == self.start:

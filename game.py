@@ -2,12 +2,10 @@ import pygame.sprite
 from PygameUIKit import Group
 from PygameUIKit.button import ButtonText
 
-from label import Label
 from objects import *
 
-
 COLOR_BUTTON = (82, 148, 201)
-COLOR_TEXT_BUTTON = DARKWHITE
+COLOR_TEXT_BUTTON = DARK_WHITE
 
 FONT_BTN = pygame.font.SysFont('None', 40)
 
@@ -20,11 +18,9 @@ class Game:
         # obj
         self.grid = Grid(700, 20)
         self.find_path_btn = ButtonText(COLOR_BUTTON, self.grid.solve, "FIND PATH", border_radius=2,
-                                        font_color=COLOR_TEXT_BUTTON, font = FONT_BTN)
+                                        font_color=COLOR_TEXT_BUTTON, font=FONT_BTN)
         self.clear_btn = ButtonText(RED, self.grid.reset, "CLEAR", border_radius=2, font=FONT_BTN)
         # ui
-        self.explanation_lbl = Label("Mousewheel button to set arrival point", 10, 100,
-                                     pygame.font.SysFont('comicsans', 20), WHITE)
 
         self.btns = Group(self.find_path_btn, self.clear_btn)
         self.labels = pygame.sprite.Group()
@@ -33,7 +29,7 @@ class Game:
         clock = pygame.time.Clock()
         while self.game_is_on:
             clock.tick(FPS)
-            self.win.fill(LIGHTBLACK)
+            self.win.fill(LIGHT_BLACK)
             self.events()
             self.draw(self.win)
             pygame.display.flip()

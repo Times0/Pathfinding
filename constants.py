@@ -1,10 +1,12 @@
-from colors import *
-import pygame.math
+LIGHT_BLACK = 25, 25, 25
+LIGHTER_BLACK = 39, 39, 55
+WHITE = 255, 255, 255
+DARK_WHITE = 200, 200, 230
+RED = 255, 0, 0
+PURPLE = 128, 0, 128
 
 ratio = 3 / 4
 WIDTH, HEIGHT = int(1920 * ratio), int(1080 * ratio)
 
-print(HEIGHT)
-vec = pygame.math.Vector2
 # game
-FPS = 500
+FPS = 60
