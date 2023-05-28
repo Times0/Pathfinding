@@ -17,8 +17,6 @@ class Game:
         self.game_is_on = True
         self.win = win
 
-        basicfont = pygame.font.SysFont('comicsans', 50)
-
         # obj
         self.grid = Grid(700, 20)
         self.find_path_btn = ButtonText(COLOR_BUTTON, self.grid.solve, "FIND PATH", border_radius=2,
@@ -33,9 +31,8 @@ class Game:
 
     def run(self):
         clock = pygame.time.Clock()
-
         while self.game_is_on:
-            dt = clock.tick(FPS)
+            clock.tick(FPS)
             self.win.fill(LIGHTBLACK)
             self.events()
             self.draw(self.win)
